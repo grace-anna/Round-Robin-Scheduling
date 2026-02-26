@@ -3,7 +3,7 @@ const algorithm=(processes,timeQuantum)=>
 {
   let results = [];
   let ganttChart = [];
-  let p=processes.map(proc=>({...proc}));
+  let p=processes.map(proc=>({...proc,remainingTime:proc.burstTime}));
   p=p.sort((a,b)=>a.arrivalTime-b.arrivalTime)
   const n=p.length;
   let totalTurnAroundTime=0,totalWaitingTime=0,avgWaitingTime=0,avgTurnAroundTime=0;
@@ -18,20 +18,19 @@ const algorithm=(processes,timeQuantum)=>
 
   while (completed < n) {
         if (queue.length===0&&idx<n) {
-            time = p[idx].arrivalTime;
+            time = Math.max(time,p[idx].arrivalTime);
             queue.push(idx);
             inQueue[idx] = 1;
             idx++;
         }
         x=queue.shift();
         let runtime=p[x].remainingTime>timeQuantum?timeQuantum:p[x].remainingTime;
-ganttChart.push({
+   ganttChart.push({
   id: p[x].id,
   start: time,
   end: time + runtime,
   queueSnapshot: [...queue.map(i => p[i].id)]
-});
-// ...   
+});   
         time+=runtime;
         p[x].remainingTime-=runtime;
         while (idx < n && p[idx].arrivalTime <= time) {
@@ -41,6 +40,9 @@ ganttChart.push({
       }
       idx++;
     }
+
+       
+      
       if(p[x].remainingTime>0)
       {
         queue.push(x);
@@ -79,7 +81,7 @@ const handleBTchange=(event)=>{setNewBT(event.target.value)}
 const handleATchange=(event)=>{setNewAT(event.target.value)}
 const handlePIDchange=(event)=>{setNewPID(event.target.value)}
 const addProcess=(event)=>{event.preventDefault();
-      const process={arrivalTime: Number(newAT),burstTime:Number(newBT),remainingTime:Number(newBT), id:newPID};
+      const process={arrivalTime: Number(newAT),burstTime:Number(newBT), id:newPID};
       setProcesses(processes.concat(process))
       setNewAT('')
       setNewBT('')
@@ -89,12 +91,20 @@ const handleCalculate = () => {
   setOutput(result);
   setshowcount(0);
 };
-useEffect(()=>{if (output&&showcount<output.ganttChart.length){const timer=setTimeout(()=>{setshowcount(showcount+1)},tq*500);return ()=>clearTimeout(timer)}},[output,showcount]);
+useEffect(()=>{if (output&&showcount<output.ganttChart.length){const timer=setTimeout(()=>{setshowcount(showcount+1)},800);return ()=>clearTimeout(timer)}},[output,showcount]);
 
 return (
     <div className="container">
       <h2>Round Robin Scheduler</h2>
-      
+      <div>
+  <label>Time Quantum: </label>
+  <input 
+    type="number" 
+    value={tq} 
+    onChange={(e) => setTq(Number(e.target.value))} 
+    min="1"
+  />
+</div>
       <form onSubmit={addProcess}>
         <div>
           <div>Process Id: <input value={newPID} onChange={handlePIDchange} /></div>
