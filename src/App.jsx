@@ -1,6 +1,10 @@
 import {useState,useEffect} from 'react'
-const algorithm=(processes,timeQuantum)=>
-{
+
+  const algorithm = (processes, timeQuantum) => {
+  if (!timeQuantum || timeQuantum <= 0) {
+    return { results: [], ganttChart: [], avgTurnAroundTime: 0, avgWaitingTime: 0 };
+  }
+
   let results = [];
   let ganttChart = [];
   let p=processes.map(proc=>({...proc,remainingTime:proc.burstTime}));
@@ -87,6 +91,9 @@ const addProcess=(event)=>{event.preventDefault();
       setNewBT('')
      }
 const handleCalculate = () => {
+   if (tq <= 0 || isNaN(tq)) {
+    alert("Please enter a Time Quantum greater than 0");
+    return;}
   const result = algorithm(processes, tq);
   setOutput(result);
   setshowcount(0);
@@ -97,13 +104,20 @@ return (
     <div className="container">
       <h2>Round Robin Scheduler</h2>
       <div>
+        <div style={{ marginBottom: '20px' }}>
   <label>Time Quantum: </label>
-  <input 
-    type="number" 
-    value={tq} 
-    onChange={(e) => setTq(Number(e.target.value))} 
-    min="1"
-  />
+ <input 
+  type="number" 
+  value={tq} 
+  onChange={(e) => {
+    const val = Number(e.target.value);
+    // Only update if the value is a positive number
+    // This prevents the "0" state while typing
+    setTq(val > 0 ? val : ''); 
+  }} 
+  min="1"
+  placeholder="Min 1"
+/></div>
 </div>
       <form onSubmit={addProcess}>
         <div>
