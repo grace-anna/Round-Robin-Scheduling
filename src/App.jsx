@@ -143,6 +143,7 @@ return (
             <th>Process</th>
             <th>Arrival Time</th>
             <th>Burst Time</th>
+            <th style={{ width: '50px' }}></th>
           </tr>
         </thead>
         <tbody>
@@ -153,13 +154,13 @@ return (
               <td>{p.arrivalTime}</td>
               <td>{p.burstTime}</td>
               <td>
-        <button 
-          onClick={() => removeProcess(p.id)}
-          style={{ padding: '2px 8px', backgroundColor: '#cc0000', color: 'white' }}
-        >
-          ×
-        </button>
-      </td>
+  <button 
+              className="delete-btn" 
+              onClick={() => removeProcess(p.id)} // Fixed: Use onClick and arrow function
+            >
+              &times;
+            </button>
+</td>
             </tr>
           )}
         </tbody>
