@@ -90,6 +90,10 @@ const addProcess=(event)=>{event.preventDefault();
       setNewAT('')
       setNewBT('')
      }
+     const removeProcess = (id) => {
+  setProcesses(processes.filter(p => p.id !== id));
+  setOutput(null); 
+};
 const handleCalculate = () => {
    if (tq <= 0 || isNaN(tq)) {
     alert("Please enter a Time Quantum greater than 0");
@@ -104,15 +108,14 @@ return (
     <div className="container">
       <h2>Round Robin Scheduler</h2>
       <div>
-        <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '12px' }}>
   <label>Time Quantum: </label>
  <input 
   type="number" 
   value={tq} 
   onChange={(e) => {
     const val = Number(e.target.value);
-    // Only update if the value is a positive number
-    // This prevents the "0" state while typing
+    
     setTq(val > 0 ? val : ''); 
   }} 
   min="1"
@@ -149,6 +152,14 @@ return (
               <td>{p.id}</td>
               <td>{p.arrivalTime}</td>
               <td>{p.burstTime}</td>
+              <td>
+        <button 
+          onClick={() => removeProcess(p.id)}
+          style={{ padding: '2px 8px', backgroundColor: '#cc0000', color: 'white' }}
+        >
+          ×
+        </button>
+      </td>
             </tr>
           )}
         </tbody>
