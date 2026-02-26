@@ -89,7 +89,7 @@ const handleCalculate = () => {
   setOutput(result);
   setshowcount(0);
 };
-useEffect(()=>{if (output&&showcount<output.ganttChart.length){const timer=setTimeout(()=>{setshowcount(showcount+1)},tq*1000);return ()=>clearTimeout(timer)}},[output,showcount]);
+useEffect(()=>{if (output&&showcount<output.ganttChart.length){const timer=setTimeout(()=>{setshowcount(showcount+1)},tq*500);return ()=>clearTimeout(timer)}},[output,showcount]);
 
 return (
     <div className="container">
